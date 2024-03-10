@@ -26,10 +26,6 @@ ImGuiMemFreeFunc  :: #type proc "c" (ptr: rawptr, user_data: rawptr)
 ImGuiInputTextCallback :: #type proc "c" (data: ^ImGuiInputTextCallbackData) -> int
 ImGuiSizeCallback      :: #type proc "c" (data: ^ImGuiSizeCallbackData)
 
-ImDrawListSharedData :: struct {}
-ImFontBuilderIO :: struct {}
-ImGuiContext :: struct {}
-
 ImVector :: struct(T: typeid) {
     size:     i32,
     capacity: i32,

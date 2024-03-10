@@ -20,7 +20,7 @@ import vk "vendor:vulkan"
 
 when ODIN_OS == .Linux {
     foreign import imgui "./vendor/cimgui/build/cimgui.a"
-} else if ODIN_OS == .Windows {
+} else when ODIN_OS == .Windows {
     foreign import imgui { "./vendor/cimgui/build/Release/cimgui.lib", "./vendor/cimgui/build_impl/imgui_impl.lib" }
 }
 
@@ -43,16 +43,21 @@ type_map := map[string]string {
     "short"         = "i16"              ,
     "ImU32"         = "u32"              ,
     "unsigned char" = "u8"               ,
-    "unsigned int"  = "u32"             ,
+    "unsigned int"  = "u32"              ,
     "unsigned short"= "u16"              ,
+    "signed short"  = "i16"              ,
+    "signed int"    = "i32"              ,
+    "signed char"   = "i8"               ,
     "const char*"   = "cstring"          ,
     "const void*"   = "rawptr"           ,
+    "void const*"   = "rawptr"           ,
     "void*"         = "rawptr"           ,
     "void**"        = "^rawptr"          ,
     "void"          = "---"              ,
     "size_t"        = "u64"              ,
     "size_t*"       = "^u64"             ,
     "const char* const[]" = "[^]cstring" ,
+    "char* const[]" = "[^]cstring" ,
     "GLFWwindow*"   = "glfw.WindowHandle",
     "GLFWmonitor*"  = "glfw.MonitorHandle",
     "VkDevice"      = "vk.Device",
@@ -83,6 +88,7 @@ replacement_signature := map[string]string {
 
 DisallowedFirstCharacters := []u8 { '0','1','2','3','4','5','6','7','8','9' }
 DisallowedArgumentNames   := []string { "in" }
+DisallowedStructMemberNames   := []string { "where" }
 
 resolve_name :: proc (in_name: string) -> string {
     name := in_name
@@ -119,6 +125,8 @@ resolve_template_type :: proc (in_type: string) -> (string, bool) {
 resolve_type :: proc (in_type: string) -> string {
     type := in_type
 
+    type = strings.trim_prefix(type, "const ")
+
     if type in type_map do type = type_map[type]
     else {
         is_proc_pointer : bool
@@ -154,15 +162,21 @@ resolve_proc_pointer :: proc (type: string) -> (string, bool) {
         arguments := strings.split(without_type, ",")
 
         for arg, index in arguments {
-            elem := strings.split(arg, " ")
+            if arg in type_map {
+                fmt.sbprintf(&signature_builder, "arg%v: %v", index, type_map[arg])
 
-            type_to_resolve : string
-            if len(elem) > 2 do type_to_resolve = strings.join(elem[:len(elem)-1], " ")
-            else do type_to_resolve = elem[0]
+                if index < len(arguments)-1 do fmt.sbprint(&signature_builder, ", ")
+            } else {
+                elem := strings.split(arg, " ")
 
-            fmt.sbprintf(&signature_builder, "%v: %v", elem[len(elem)-1], resolve_type(type_to_resolve))
+                type_to_resolve : string
+                if len(elem) > 2 do type_to_resolve = strings.join(elem[:len(elem)-1], " ")
+                else do type_to_resolve = elem[0]
 
-            if index < len(arguments)-1 do fmt.sbprint(&signature_builder, ", ")
+                fmt.sbprintf(&signature_builder, "%v: %v", elem[len(elem)-1], resolve_type(type_to_resolve))
+
+                if index < len(arguments)-1 do fmt.sbprint(&signature_builder, ", ")
+            }
         }
 
         signature := to_string(signature_builder)
@@ -267,6 +281,8 @@ get_signature :: proc (definition: json.Object) -> string {
         if arg_name == "..." {
             strings.write_string(&builder, "#c_vararg args: ..any")
             continue
+        } else if arg_name == "context" {
+            arg_name = "ctx"
         }
 
         arg_name = resolve_name(arg_name)
@@ -436,6 +452,9 @@ main :: proc () {
             name := obj["name"].(string)
             type := obj["type"].(string)
 
+            if slice.contains(DisallowedStructMemberNames, name) {
+                name = fmt.aprintf("_%v", name)
+            }
             name = strings.left_justify(name, longest+1, " ")
             type = resolve_type(type)
 

@@ -3,71 +3,24 @@
 
 package imgui_binding
 
-ImColor :: struct {
-    Value : ImVec4,
+ImGuiGroupData :: struct {
+    WindowID                           : ImGuiID,
+    BackupCursorPos                    : ImVec2,
+    BackupCursorMaxPos                 : ImVec2,
+    BackupIndent                       : ImVec1,
+    BackupGroupOffset                  : ImVec1,
+    BackupCurrLineSize                 : ImVec2,
+    BackupCurrLineTextBaseOffset       : f32,
+    BackupActiveIdIsAlive              : ImGuiID,
+    BackupActiveIdPreviousFrameIsAlive : bool,
+    BackupHoveredIdIsAlive             : bool,
+    EmitItem                           : bool,
 }
 
-ImDrawChannel :: struct {
-    _CmdBuffer : ImVector(ImDrawCmd),
-    _IdxBuffer : ImVector(ImDrawIdx),
-}
-
-ImDrawCmd :: struct {
-    ClipRect         : ImVec4,
-    TextureId        : ImTextureID,
-    VtxOffset        : u32,
-    IdxOffset        : u32,
-    ElemCount        : u32,
-    UserCallback     : ImDrawCallback,
-    UserCallbackData : rawptr,
-}
-
-ImDrawCmdHeader :: struct {
-    ClipRect  : ImVec4,
-    TextureId : ImTextureID,
-    VtxOffset : u32,
-}
-
-ImDrawData :: struct {
-    Valid            : bool,
-    CmdListsCount    : i32,
-    TotalIdxCount    : i32,
-    TotalVtxCount    : i32,
-    CmdLists         : ^^ImDrawList,
-    DisplayPos       : ImVec2,
-    DisplaySize      : ImVec2,
-    FramebufferScale : ImVec2,
-    OwnerViewport    : ^ImGuiViewport,
-}
-
-ImDrawList :: struct {
-    CmdBuffer       : ImVector(ImDrawCmd),
-    IdxBuffer       : ImVector(ImDrawIdx),
-    VtxBuffer       : ImVector(ImDrawVert),
-    Flags           : ImDrawListFlags,
-    _VtxCurrentIdx  : u32,
-    _Data           : ^ImDrawListSharedData,
-    _OwnerName      : cstring,
-    _VtxWritePtr    : ^ImDrawVert,
-    _IdxWritePtr    : ^ImDrawIdx,
-    _ClipRectStack  : ImVector(ImVec4),
-    _TextureIdStack : ImVector(ImTextureID),
-    _Path           : ImVector(ImVec2),
-    _CmdHeader      : ImDrawCmdHeader,
-    _Splitter       : ImDrawListSplitter,
-    _FringeScale    : f32,
-}
-
-ImDrawListSplitter :: struct {
-    _Current  : i32,
-    _Count    : i32,
-    _Channels : ImVector(ImDrawChannel),
-}
-
-ImDrawVert :: struct {
-    pos : ImVec2,
-    uv  : ImVec2,
-    col : u32,
+ImGuiTableSortSpecs :: struct {
+    Specs      : ^ImGuiTableColumnSortSpecs,
+    SpecsCount : i32,
+    SpecsDirty : bool,
 }
 
 ImFont :: struct {
@@ -91,28 +44,120 @@ ImFont :: struct {
     Used4kPagesMap                    : [2]ImU8,
 }
 
-ImFontAtlas :: struct {
-    Flags              : ImFontAtlasFlags,
-    TexID              : ImTextureID,
-    TexDesiredWidth    : i32,
-    TexGlyphPadding    : i32,
-    Locked             : bool,
-    TexReady           : bool,
-    TexPixelsUseColors : bool,
-    TexPixelsAlpha8    : ^u8,
-    TexPixelsRGBA32    : ^u32,
-    TexWidth           : i32,
-    TexHeight          : i32,
-    TexUvScale         : ImVec2,
-    TexUvWhitePixel    : ImVec2,
-    Fonts              : ImVector(^ImFont),
-    CustomRects        : ImVector(ImFontAtlasCustomRect),
-    ConfigData         : ImVector(ImFontConfig),
-    TexUvLines         : [64]ImVec4,
-    FontBuilderIO      : ^ImFontBuilderIO,
-    FontBuilderFlags   : u32,
-    PackIdMouseCursors : i32,
-    PackIdLines        : i32,
+ImGuiStorage :: struct {
+    Data : ImVector(ImGuiStoragePair),
+}
+
+ImGuiWindowDockStyle :: struct {
+    Colors                                : [6]u32,
+}
+
+ImGuiWindowClass :: struct {
+    ClassId                    : ImGuiID,
+    ParentViewportId           : ImGuiID,
+    ViewportFlagsOverrideSet   : ImGuiViewportFlags,
+    ViewportFlagsOverrideClear : ImGuiViewportFlags,
+    TabItemFlagsOverrideSet    : ImGuiTabItemFlags,
+    DockNodeFlagsOverrideSet   : ImGuiDockNodeFlags,
+    DockingAlwaysTabBar        : bool,
+    DockingAllowUnclassed      : bool,
+}
+
+ImGuiListClipperData :: struct {
+    ListClipper     : ^ImGuiListClipper,
+    LossynessOffset : f32,
+    StepNo          : i32,
+    ItemsFrozen     : i32,
+    Ranges          : ImVector(ImGuiListClipperRange),
+}
+
+ImGuiInputEvent :: struct {
+    Type              : ImGuiInputEventType,
+    Source            : ImGuiInputSource,
+//                      : union { ImGuiInputEventMousePos MousePos; ImGuiInputEventMouseWheel MouseWheel; ImGuiInputEventMouseButton MouseButton; ImGuiInputEventMouseViewport MouseViewport; ImGuiInputEventKey Key; ImGuiInputEventText Text; ImGuiInputEventAppFocused AppFocused;}, /* unions are not supported yet in the generator */
+    AddedByTestEngine : bool,
+}
+
+ImGuiDataTypeInfo :: struct {
+    Size     : u64,
+    Name     : ^i8,
+    PrintFmt : ^i8,
+    ScanFmt  : ^i8,
+}
+
+ImGuiStyle :: struct {
+    Alpha                      : f32,
+    DisabledAlpha              : f32,
+    WindowPadding              : ImVec2,
+    WindowRounding             : f32,
+    WindowBorderSize           : f32,
+    WindowMinSize              : ImVec2,
+    WindowTitleAlign           : ImVec2,
+    WindowMenuButtonPosition   : ImGuiDir,
+    ChildRounding              : f32,
+    ChildBorderSize            : f32,
+    PopupRounding              : f32,
+    PopupBorderSize            : f32,
+    FramePadding               : ImVec2,
+    FrameRounding              : f32,
+    FrameBorderSize            : f32,
+    ItemSpacing                : ImVec2,
+    ItemInnerSpacing           : ImVec2,
+    CellPadding                : ImVec2,
+    TouchExtraPadding          : ImVec2,
+    IndentSpacing              : f32,
+    ColumnsMinSpacing          : f32,
+    ScrollbarSize              : f32,
+    ScrollbarRounding          : f32,
+    GrabMinSize                : f32,
+    GrabRounding               : f32,
+    LogSliderDeadzone          : f32,
+    TabRounding                : f32,
+    TabBorderSize              : f32,
+    TabMinWidthForCloseButton  : f32,
+    ColorButtonPosition        : ImGuiDir,
+    ButtonTextAlign            : ImVec2,
+    SelectableTextAlign        : ImVec2,
+    DisplayWindowPadding       : ImVec2,
+    DisplaySafeAreaPadding     : ImVec2,
+    MouseCursorScale           : f32,
+    AntiAliasedLines           : bool,
+    AntiAliasedLinesUseTex     : bool,
+    AntiAliasedFill            : bool,
+    CurveTessellationTol       : f32,
+    CircleTessellationMaxError : f32,
+    Colors                     : [55]ImVec4,
+}
+
+ImGuiComboPreviewData :: struct {
+    PreviewRect                  : ImRect,
+    BackupCursorPos              : ImVec2,
+    BackupCursorMaxPos           : ImVec2,
+    BackupCursorPosPrevLine      : ImVec2,
+    BackupPrevLineTextBaseOffset : f32,
+    BackupLayout                 : ImGuiLayoutType,
+}
+
+ImGuiTableColumnSettings :: struct {
+    WidthOrWeight : f32,
+    UserID        : ImGuiID,
+    Index         : ImGuiTableColumnIdx,
+    DisplayOrder  : ImGuiTableColumnIdx,
+    SortOrder     : ImGuiTableColumnIdx,
+    SortDirection : ImU8,
+    IsEnabled     : ImU8,
+    IsStretch     : ImU8,
+}
+
+StbUndoRecord :: struct {
+    _where        : i32,
+    insert_length : i32,
+    delete_length : i32,
+    char_storage  : i32,
+}
+
+ImVec1 :: struct {
+    x : f32,
 }
 
 ImFontAtlasCustomRect :: struct {
@@ -124,6 +169,124 @@ ImFontAtlasCustomRect :: struct {
     GlyphAdvanceX : f32,
     GlyphOffset   : ImVec2,
     Font          : ^ImFont,
+}
+
+ImGuiPayload :: struct {
+    Data           : rawptr,
+    DataSize       : i32,
+    SourceId       : ImGuiID,
+    SourceParentId : ImGuiID,
+    DataFrameCount : i32,
+    DataType       : [33]i8,
+    Preview        : bool,
+    Delivery       : bool,
+}
+
+ImRect :: struct {
+    Min : ImVec2,
+    Max : ImVec2,
+}
+
+ImGuiInputEventAppFocused :: struct {
+    Focused : bool,
+}
+
+ImGuiColorMod :: struct {
+    Col         : ImGuiCol,
+    BackupValue : ImVec4,
+}
+
+ImGuiInputEventMouseWheel :: struct {
+    WheelX : f32,
+    WheelY : f32,
+}
+
+ImVec2ih :: struct {
+    x : i16,
+    y : i16,
+}
+
+ImGuiInputEventMousePos :: struct {
+    PosX : f32,
+    PosY : f32,
+}
+
+ImGuiPtrOrIndex :: struct {
+    Ptr   : rawptr,
+    Index : i32,
+}
+
+ImGuiTableColumn :: struct {
+    Flags                    : ImGuiTableColumnFlags,
+    WidthGiven               : f32,
+    MinX                     : f32,
+    MaxX                     : f32,
+    WidthRequest             : f32,
+    WidthAuto                : f32,
+    StretchWeight            : f32,
+    InitStretchWeightOrWidth : f32,
+    ClipRect                 : ImRect,
+    UserID                   : ImGuiID,
+    WorkMinX                 : f32,
+    WorkMaxX                 : f32,
+    ItemWidth                : f32,
+    ContentMaxXFrozen        : f32,
+    ContentMaxXUnfrozen      : f32,
+    ContentMaxXHeadersUsed   : f32,
+    ContentMaxXHeadersIdeal  : f32,
+    NameOffset               : ImS16,
+    DisplayOrder             : ImGuiTableColumnIdx,
+    IndexWithinEnabledSet    : ImGuiTableColumnIdx,
+    PrevEnabledColumn        : ImGuiTableColumnIdx,
+    NextEnabledColumn        : ImGuiTableColumnIdx,
+    SortOrder                : ImGuiTableColumnIdx,
+    DrawChannelCurrent       : ImGuiTableDrawChannelIdx,
+    DrawChannelFrozen        : ImGuiTableDrawChannelIdx,
+    DrawChannelUnfrozen      : ImGuiTableDrawChannelIdx,
+    IsEnabled                : bool,
+    IsUserEnabled            : bool,
+    IsUserEnabledNextFrame   : bool,
+    IsVisibleX               : bool,
+    IsVisibleY               : bool,
+    IsRequestOutput          : bool,
+    IsSkipItems              : bool,
+    IsPreserveWidthAuto      : bool,
+    NavLayerCurrent          : ImS8,
+    AutoFitQueue             : ImU8,
+    CannotSkipItemsQueue     : ImU8,
+    SortDirection            : ImU8,
+    SortDirectionsAvailCount : ImU8,
+    SortDirectionsAvailMask  : ImU8,
+    SortDirectionsAvailList  : ImU8,
+}
+
+ImGuiInputTextState :: struct {
+    ID                   : ImGuiID,
+    CurLenW              : i32,
+    CurLenA              : i32,
+    TextW                : ImVector(ImWchar),
+    TextA                : ImVector(i8),
+    InitialTextA         : ImVector(i8),
+    TextAIsValid         : bool,
+    BufCapacityA         : i32,
+    ScrollX              : f32,
+    Stb                  : STB(TexteditState),
+    CursorAnim           : f32,
+    CursorFollow         : bool,
+    SelectedAllMouseLock : bool,
+    Edited               : bool,
+    Flags                : ImGuiInputTextFlags,
+}
+
+ImGuiNavItemData :: struct {
+    Window       : ^ImGuiWindow,
+    ID           : ImGuiID,
+    FocusScopeId : ImGuiID,
+    RectRel      : ImRect,
+    InFlags      : ImGuiItemFlags,
+    DistBox      : f32,
+    DistCenter   : f32,
+    DistAxial    : f32,
 }
 
 ImFontConfig :: struct {
@@ -148,6 +311,513 @@ ImFontConfig :: struct {
     DstFont              : ^ImFont,
 }
 
+ImGuiKeyOwnerData :: struct {
+    OwnerCurr        : ImGuiID,
+    OwnerNext        : ImGuiID,
+    LockThisFrame    : bool,
+    LockUntilRelease : bool,
+}
+
+ImGuiPlatformMonitor :: struct {
+    MainPos  : ImVec2,
+    MainSize : ImVec2,
+    WorkPos  : ImVec2,
+    WorkSize : ImVec2,
+    DpiScale : f32,
+}
+
+ImGuiStackSizes :: struct {
+    SizeOfIDStack         : i16,
+    SizeOfColorStack      : i16,
+    SizeOfStyleVarStack   : i16,
+    SizeOfFontStack       : i16,
+    SizeOfFocusScopeStack : i16,
+    SizeOfGroupStack      : i16,
+    SizeOfItemFlagsStack  : i16,
+    SizeOfBeginPopupStack : i16,
+    SizeOfDisabledStack   : i16,
+}
+
+ImGuiMenuColumns :: struct {
+    TotalWidth     : u32,
+    NextTotalWidth : u32,
+    Spacing        : ImU16,
+    OffsetIcon     : ImU16,
+    OffsetLabel    : ImU16,
+    OffsetShortcut : ImU16,
+    OffsetMark     : ImU16,
+    Widths         : [4]ImU16,
+}
+
+ImGuiDataTypeTempStorage :: struct {
+    Data    : [8]ImU8,
+}
+
+ImGuiStyleMod :: struct {
+    VarIdx : ImGuiStyleVar,
+//           : ^[2]union { int BackupInt, /* unions are not supported yet in the generator */
+}
+
+ImGuiPlatformIO :: struct {
+    Platform_CreateWindow       : #type proc "c" (vp: ^ImGuiViewport),
+    Platform_DestroyWindow      : #type proc "c" (vp: ^ImGuiViewport),
+    Platform_ShowWindow         : #type proc "c" (vp: ^ImGuiViewport),
+    Platform_SetWindowPos       : #type proc "c" (vp: ^ImGuiViewport, pos: ImVec2),
+    Platform_GetWindowPos       : #type proc "c" (vp: ^ImGuiViewport) -> ImVec2,
+    Platform_SetWindowSize      : #type proc "c" (vp: ^ImGuiViewport, size: ImVec2),
+    Platform_GetWindowSize      : #type proc "c" (vp: ^ImGuiViewport) -> ImVec2,
+    Platform_SetWindowFocus     : #type proc "c" (vp: ^ImGuiViewport),
+    Platform_GetWindowFocus     : #type proc "c" (vp: ^ImGuiViewport) -> bool,
+    Platform_GetWindowMinimized : #type proc "c" (vp: ^ImGuiViewport) -> bool,
+    Platform_SetWindowTitle     : #type proc "c" (vp: ^ImGuiViewport, str: ^i8),
+    Platform_SetWindowAlpha     : #type proc "c" (vp: ^ImGuiViewport, alpha: f32),
+    Platform_UpdateWindow       : #type proc "c" (vp: ^ImGuiViewport),
+    Platform_RenderWindow       : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
+    Platform_SwapBuffers        : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
+    Platform_GetWindowDpiScale  : #type proc "c" (vp: ^ImGuiViewport) -> f32,
+    Platform_OnChangedViewport  : #type proc "c" (vp: ^ImGuiViewport),
+    Platform_CreateVkSurface    : #type proc "c" (vp: ^ImGuiViewport, vk_inst: ImU64, vk_allocators: rawptr, out_vk_surface: ^ImU64) -> i32,
+    Renderer_CreateWindow       : #type proc "c" (vp: ^ImGuiViewport),
+    Renderer_DestroyWindow      : #type proc "c" (vp: ^ImGuiViewport),
+    Renderer_SetWindowSize      : #type proc "c" (vp: ^ImGuiViewport, size: ImVec2),
+    Renderer_RenderWindow       : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
+    Renderer_SwapBuffers        : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
+    Monitors                    : ImVector(ImGuiPlatformMonitor),
+    Viewports                   : ImVector(^ImGuiViewport),
+}
+
+ImGuiViewport :: struct {
+    ID                    : ImGuiID,
+    Flags                 : ImGuiViewportFlags,
+    Pos                   : ImVec2,
+    Size                  : ImVec2,
+    WorkPos               : ImVec2,
+    WorkSize              : ImVec2,
+    DpiScale              : f32,
+    ParentViewportId      : ImGuiID,
+    DrawData              : ^ImDrawData,
+    RendererUserData      : rawptr,
+    PlatformUserData      : rawptr,
+    PlatformHandle        : rawptr,
+    PlatformHandleRaw     : rawptr,
+    PlatformRequestMove   : bool,
+    PlatformRequestResize : bool,
+    PlatformRequestClose  : bool,
+}
+
+ImDrawData :: struct {
+    Valid            : bool,
+    CmdListsCount    : i32,
+    TotalIdxCount    : i32,
+    TotalVtxCount    : i32,
+    CmdLists         : ^^ImDrawList,
+    DisplayPos       : ImVec2,
+    DisplaySize      : ImVec2,
+    FramebufferScale : ImVec2,
+    OwnerViewport    : ^ImGuiViewport,
+}
+
+ImDrawCmd :: struct {
+    ClipRect         : ImVec4,
+    TextureId        : ImTextureID,
+    VtxOffset        : u32,
+    IdxOffset        : u32,
+    ElemCount        : u32,
+    UserCallback     : ImDrawCallback,
+    UserCallbackData : rawptr,
+}
+
+ImGuiTable :: struct {
+    ID                         : ImGuiID,
+    Flags                      : ImGuiTableFlags,
+    RawData                    : rawptr,
+    TempData                   : ^ImGuiTableTempData,
+    Columns                    : ImSpan(ImGuiTableColumn),
+    DisplayOrderToIndex        : ImSpan(ImGuiTableColumnIdx),
+    RowCellData                : ImSpan(ImGuiTableCellData),
+    EnabledMaskByDisplayOrder  : ImU64,
+    EnabledMaskByIndex         : ImU64,
+    VisibleMaskByIndex         : ImU64,
+    RequestOutputMaskByIndex   : ImU64,
+    SettingsLoadedFlags        : ImGuiTableFlags,
+    SettingsOffset             : i32,
+    LastFrameActive            : i32,
+    ColumnsCount               : i32,
+    CurrentRow                 : i32,
+    CurrentColumn              : i32,
+    InstanceCurrent            : ImS16,
+    InstanceInteracted         : ImS16,
+    RowPosY1                   : f32,
+    RowPosY2                   : f32,
+    RowMinHeight               : f32,
+    RowTextBaseline            : f32,
+    RowIndentOffsetX           : f32,
+    RowFlags                   : ImGuiTableRowFlags,
+    LastRowFlags               : ImGuiTableRowFlags,
+    RowBgColorCounter          : i32,
+    RowBgColor                 : [2]u32,
+    BorderColorStrong          : u32,
+    BorderColorLight           : u32,
+    BorderX1                   : f32,
+    BorderX2                   : f32,
+    HostIndentX                : f32,
+    MinColumnWidth             : f32,
+    OuterPaddingX              : f32,
+    CellPaddingX               : f32,
+    CellPaddingY               : f32,
+    CellSpacingX1              : f32,
+    CellSpacingX2              : f32,
+    InnerWidth                 : f32,
+    ColumnsGivenWidth          : f32,
+    ColumnsAutoFitWidth        : f32,
+    ColumnsStretchSumWeights   : f32,
+    ResizedColumnNextWidth     : f32,
+    ResizeLockMinContentsX2    : f32,
+    RefScale                   : f32,
+    OuterRect                  : ImRect,
+    InnerRect                  : ImRect,
+    WorkRect                   : ImRect,
+    InnerClipRect              : ImRect,
+    BgClipRect                 : ImRect,
+    Bg0ClipRectForDrawCmd      : ImRect,
+    Bg2ClipRectForDrawCmd      : ImRect,
+    HostClipRect               : ImRect,
+    HostBackupInnerClipRect    : ImRect,
+    OuterWindow                : ^ImGuiWindow,
+    InnerWindow                : ^ImGuiWindow,
+    ColumnsNames               : ImGuiTextBuffer,
+    DrawSplitter               : ^ImDrawListSplitter,
+    InstanceDataFirst          : ImGuiTableInstanceData,
+    InstanceDataExtra          : ImVector(ImGuiTableInstanceData),
+    SortSpecsSingle            : ImGuiTableColumnSortSpecs,
+    SortSpecsMulti             : ImVector(ImGuiTableColumnSortSpecs),
+    SortSpecs                  : ImGuiTableSortSpecs,
+    SortSpecsCount             : ImGuiTableColumnIdx,
+    ColumnsEnabledCount        : ImGuiTableColumnIdx,
+    ColumnsEnabledFixedCount   : ImGuiTableColumnIdx,
+    DeclColumnsCount           : ImGuiTableColumnIdx,
+    HoveredColumnBody          : ImGuiTableColumnIdx,
+    HoveredColumnBorder        : ImGuiTableColumnIdx,
+    AutoFitSingleColumn        : ImGuiTableColumnIdx,
+    ResizedColumn              : ImGuiTableColumnIdx,
+    LastResizedColumn          : ImGuiTableColumnIdx,
+    HeldHeaderColumn           : ImGuiTableColumnIdx,
+    ReorderColumn              : ImGuiTableColumnIdx,
+    ReorderColumnDir           : ImGuiTableColumnIdx,
+    LeftMostEnabledColumn      : ImGuiTableColumnIdx,
+    RightMostEnabledColumn     : ImGuiTableColumnIdx,
+    LeftMostStretchedColumn    : ImGuiTableColumnIdx,
+    RightMostStretchedColumn   : ImGuiTableColumnIdx,
+    ContextPopupColumn         : ImGuiTableColumnIdx,
+    FreezeRowsRequest          : ImGuiTableColumnIdx,
+    FreezeRowsCount            : ImGuiTableColumnIdx,
+    FreezeColumnsRequest       : ImGuiTableColumnIdx,
+    FreezeColumnsCount         : ImGuiTableColumnIdx,
+    RowCellDataCurrent         : ImGuiTableColumnIdx,
+    DummyDrawChannel           : ImGuiTableDrawChannelIdx,
+    Bg2DrawChannelCurrent      : ImGuiTableDrawChannelIdx,
+    Bg2DrawChannelUnfrozen     : ImGuiTableDrawChannelIdx,
+    IsLayoutLocked             : bool,
+    IsInsideRow                : bool,
+    IsInitializing             : bool,
+    IsSortSpecsDirty           : bool,
+    IsUsingHeaders             : bool,
+    IsContextPopupOpen         : bool,
+    IsSettingsRequestLoad      : bool,
+    IsSettingsDirty            : bool,
+    IsDefaultDisplayOrder      : bool,
+    IsResetAllRequest          : bool,
+    IsResetDisplayOrderRequest : bool,
+    IsUnfrozenRows             : bool,
+    IsDefaultSizingPolicy      : bool,
+    MemoryCompacted            : bool,
+    HostSkipItems              : bool,
+}
+
+ImGuiTextRange :: struct {
+    b : ^i8,
+    e : ^i8,
+}
+
+ImGuiKeyRoutingTable :: struct {
+    Index                          : [140]ImGuiKeyRoutingIndex,
+    Entries                        : ImVector(ImGuiKeyRoutingData),
+    EntriesNext                    : ImVector(ImGuiKeyRoutingData),
+}
+
+ImGuiListClipper :: struct {
+    DisplayStart : i32,
+    DisplayEnd   : i32,
+    ItemsCount   : i32,
+    ItemsHeight  : f32,
+    StartPosY    : f32,
+    TempData     : rawptr,
+}
+
+ImGuiTextIndex :: struct {
+    LineOffsets : ImVector(i32),
+    EndOffset   : i32,
+}
+
+ImGuiContextHook :: struct {
+    HookId   : ImGuiID,
+    Type     : ImGuiContextHookType,
+    Owner    : ImGuiID,
+    Callback : ImGuiContextHookCallback,
+    UserData : rawptr,
+}
+
+ImGuiNextItemData :: struct {
+    Flags        : ImGuiNextItemDataFlags,
+    Width        : f32,
+    FocusScopeId : ImGuiID,
+    OpenCond     : ImGuiCond,
+    OpenVal      : bool,
+}
+
+StbTexteditRow :: struct {
+    x0               : f32,
+    x1               : f32,
+    baseline_y_delta : f32,
+    ymin             : f32,
+    ymax             : f32,
+    num_chars        : i32,
+}
+
+ImGuiSizeCallbackData :: struct {
+    UserData    : rawptr,
+    Pos         : ImVec2,
+    CurrentSize : ImVec2,
+    DesiredSize : ImVec2,
+}
+
+ImGuiOnceUponAFrame :: struct {
+    RefFrame : i32,
+}
+
+ImDrawChannel :: struct {
+    _CmdBuffer : ImVector(ImDrawCmd),
+    _IdxBuffer : ImVector(ImDrawIdx),
+}
+
+ImGuiInputEventKey :: struct {
+    Key         : ImGuiKey,
+    Down        : bool,
+    AnalogValue : f32,
+}
+
+ImGuiMetricsConfig :: struct {
+    ShowDebugLog             : bool,
+    ShowStackTool            : bool,
+    ShowWindowsRects         : bool,
+    ShowWindowsBeginOrder    : bool,
+    ShowTablesRects          : bool,
+    ShowDrawCmdMesh          : bool,
+    ShowDrawCmdBoundingBoxes : bool,
+    ShowDockingNodes         : bool,
+    ShowWindowsRectsType     : i32,
+    ShowTablesRectsType      : i32,
+}
+
+ImGuiTableTempData :: struct {
+    TableIndex                   : i32,
+    LastTimeActive               : f32,
+    UserOuterSize                : ImVec2,
+    DrawSplitter                 : ImDrawListSplitter,
+    HostBackupWorkRect           : ImRect,
+    HostBackupParentWorkRect     : ImRect,
+    HostBackupPrevLineSize       : ImVec2,
+    HostBackupCurrLineSize       : ImVec2,
+    HostBackupCursorMaxPos       : ImVec2,
+    HostBackupColumnsOffset      : ImVec1,
+    HostBackupItemWidth          : f32,
+    HostBackupItemWidthStackSize : i32,
+}
+
+ImGuiDockNode :: struct {
+    ID                     : ImGuiID,
+    SharedFlags            : ImGuiDockNodeFlags,
+    LocalFlags             : ImGuiDockNodeFlags,
+    LocalFlagsInWindows    : ImGuiDockNodeFlags,
+    MergedFlags            : ImGuiDockNodeFlags,
+    State                  : ImGuiDockNodeState,
+    ParentNode             : ^ImGuiDockNode,
+    ChildNodes             : [2]^ImGuiDockNode,
+    Windows                : ImVector(^ImGuiWindow),
+    TabBar                 : ^ImGuiTabBar,
+    Pos                    : ImVec2,
+    Size                   : ImVec2,
+    SizeRef                : ImVec2,
+    SplitAxis              : ImGuiAxis,
+    WindowClass            : ImGuiWindowClass,
+    LastBgColor            : u32,
+    HostWindow             : ^ImGuiWindow,
+    VisibleWindow          : ^ImGuiWindow,
+    CentralNode            : ^ImGuiDockNode,
+    OnlyNodeWithWindows    : ^ImGuiDockNode,
+    CountNodeWithWindows   : i32,
+    LastFrameAlive         : i32,
+    LastFrameActive        : i32,
+    LastFrameFocused       : i32,
+    LastFocusedNodeId      : ImGuiID,
+    SelectedTabId          : ImGuiID,
+    WantCloseTabId         : ImGuiID,
+    AuthorityForPos        : ImGuiDataAuthority,
+    AuthorityForSize       : ImGuiDataAuthority,
+    AuthorityForViewport   : ImGuiDataAuthority,
+    IsVisible              : bool,
+    IsFocused              : bool,
+    IsBgDrawnThisFrame     : bool,
+    HasCloseButton         : bool,
+    HasWindowMenuButton    : bool,
+    HasCentralNodeChild    : bool,
+    WantCloseAll           : bool,
+    WantLockSizeOnce       : bool,
+    WantMouseMove          : bool,
+    WantHiddenTabBarUpdate : bool,
+    WantHiddenTabBarToggle : bool,
+}
+
+ImGuiStackTool :: struct {
+    LastActiveFrame         : i32,
+    StackLevel              : i32,
+    QueryId                 : ImGuiID,
+    Results                 : ImVector(ImGuiStackLevelInfo),
+    CopyToClipboardOnCtrlC  : bool,
+    CopyToClipboardLastTime : f32,
+}
+
+ImGuiLastItemData :: struct {
+    ID          : ImGuiID,
+    InFlags     : ImGuiItemFlags,
+    StatusFlags : ImGuiItemStatusFlags,
+    Rect        : ImRect,
+    NavRect     : ImRect,
+    DisplayRect : ImRect,
+}
+
+StbUndoState :: struct {
+    undo_rec        : [99]StbUndoRecord,
+    undo_char       : [999]ImWchar,
+    undo_point      : i16,
+    redo_point      : i16,
+    undo_char_point : i32,
+    redo_char_point : i32,
+}
+
+ImDrawList :: struct {
+    CmdBuffer       : ImVector(ImDrawCmd),
+    IdxBuffer       : ImVector(ImDrawIdx),
+    VtxBuffer       : ImVector(ImDrawVert),
+    Flags           : ImDrawListFlags,
+    _VtxCurrentIdx  : u32,
+    _Data           : ^ImDrawListSharedData,
+    _OwnerName      : ^i8,
+    _VtxWritePtr    : ^ImDrawVert,
+    _IdxWritePtr    : ^ImDrawIdx,
+    _ClipRectStack  : ImVector(ImVec4),
+    _TextureIdStack : ImVector(ImTextureID),
+    _Path           : ImVector(ImVec2),
+    _CmdHeader      : ImDrawCmdHeader,
+    _Splitter       : ImDrawListSplitter,
+    _FringeScale    : f32,
+}
+
+ImGuiOldColumns :: struct {
+    ID                       : ImGuiID,
+    Flags                    : ImGuiOldColumnFlags,
+    IsFirstFrame             : bool,
+    IsBeingResized           : bool,
+    Current                  : i32,
+    Count                    : i32,
+    OffMinX                  : f32,
+    OffMaxX                  : f32,
+    LineMinY                 : f32,
+    LineMaxY                 : f32,
+    HostCursorPosY           : f32,
+    HostCursorMaxPosX        : f32,
+    HostInitialClipRect      : ImRect,
+    HostBackupClipRect       : ImRect,
+    HostBackupParentWorkRect : ImRect,
+    Columns                  : ImVector(ImGuiOldColumnData),
+    Splitter                 : ImDrawListSplitter,
+}
+
+ImGuiTextBuffer :: struct {
+    Buf : ImVector(i8),
+}
+
+ImGuiStackLevelInfo :: struct {
+    ID              : ImGuiID,
+    QueryFrameCount : ImS8,
+    QuerySuccess    : bool,
+    DataType        : ImGuiDataType,
+    Desc            : [57]i8,
+}
+
+ImGuiWindowTempData :: struct {
+    CursorPos                 : ImVec2,
+    CursorPosPrevLine         : ImVec2,
+    CursorStartPos            : ImVec2,
+    CursorMaxPos              : ImVec2,
+    IdealMaxPos               : ImVec2,
+    CurrLineSize              : ImVec2,
+    PrevLineSize              : ImVec2,
+    CurrLineTextBaseOffset    : f32,
+    PrevLineTextBaseOffset    : f32,
+    IsSameLine                : bool,
+    IsSetPos                  : bool,
+    Indent                    : ImVec1,
+    ColumnsOffset             : ImVec1,
+    GroupOffset               : ImVec1,
+    CursorStartPosLossyness   : ImVec2,
+    NavLayerCurrent           : ImGuiNavLayer,
+    NavLayersActiveMask       : i16,
+    NavLayersActiveMaskNext   : i16,
+    NavHideHighlightOneFrame  : bool,
+    NavHasScroll              : bool,
+    MenuBarAppending          : bool,
+    MenuBarOffset             : ImVec2,
+    MenuColumns               : ImGuiMenuColumns,
+    TreeDepth                 : i32,
+    TreeJumpToParentOnPopMask : u32,
+    ChildWindows              : ImVector(^ImGuiWindow),
+    StateStorage              : ^ImGuiStorage,
+    CurrentColumns            : ^ImGuiOldColumns,
+    CurrentTableIdx           : i32,
+    LayoutType                : ImGuiLayoutType,
+    ParentLayoutType          : ImGuiLayoutType,
+    ItemWidth                 : f32,
+    TextWrapPos               : f32,
+    ItemWidthStack            : ImVector(f32),
+    TextWrapPosStack          : ImVector(f32),
+}
+
+ImGuiTableSettings :: struct {
+    ID              : ImGuiID,
+    SaveFlags       : ImGuiTableFlags,
+    RefScale        : f32,
+    ColumnsCount    : ImGuiTableColumnIdx,
+    ColumnsCountMax : ImGuiTableColumnIdx,
+    WantApply       : bool,
+}
+
+ImGuiTabItem :: struct {
+    ID                : ImGuiID,
+    Flags             : ImGuiTabItemFlags,
+    Window            : ^ImGuiWindow,
+    LastFrameVisible  : i32,
+    LastFrameSelected : i32,
+    Offset            : f32,
+    Width             : f32,
+    ContentWidth      : f32,
+    RequestedWidth    : f32,
+    NameOffset        : ImS32,
+    BeginOrder        : ImS16,
+    IndexDuringLayout : ImS16,
+    WantClose         : bool,
+}
+
 ImFontGlyph :: struct {
     Colored   : u32,
     Visible   : u32,
@@ -167,14 +837,62 @@ ImFontGlyphRangesBuilder :: struct {
     UsedChars : ImVector(u32),
 }
 
+ImGuiWindowSettings :: struct {
+    ID          : ImGuiID,
+    Pos         : ImVec2ih,
+    Size        : ImVec2ih,
+    ViewportPos : ImVec2ih,
+    ViewportId  : ImGuiID,
+    DockId      : ImGuiID,
+    ClassId     : ImGuiID,
+    DockOrder   : i16,
+    Collapsed   : bool,
+    WantApply   : bool,
+}
+
+ImGuiKeyRoutingData :: struct {
+    NextEntryIndex   : ImGuiKeyRoutingIndex,
+    Mods             : ImU16,
+    RoutingNextScore : ImU8,
+    RoutingCurr      : ImGuiID,
+    RoutingNext      : ImGuiID,
+}
+
+ImGuiListClipperRange :: struct {
+    Min                 : i32,
+    Max                 : i32,
+    PosToIndexConvert   : bool,
+    PosToIndexOffsetMin : ImS8,
+    PosToIndexOffsetMax : ImS8,
+}
+
+ImGuiSettingsHandler :: struct {
+    TypeName   : ^i8,
+    TypeHash   : ImGuiID,
+    ClearAllFn : #type proc "c" (ctx: ^ImGuiContext, handler: ^ImGuiSettingsHandler),
+    ReadInitFn : #type proc "c" (ctx: ^ImGuiContext, handler: ^ImGuiSettingsHandler),
+    ReadOpenFn : #type proc "c" (ctx: ^ImGuiContext, handler: ^ImGuiSettingsHandler, name: ^i8) -> rawptr,
+    ReadLineFn : #type proc "c" (ctx: ^ImGuiContext, handler: ^ImGuiSettingsHandler, entry: rawptr, line: ^i8),
+    ApplyAllFn : #type proc "c" (ctx: ^ImGuiContext, handler: ^ImGuiSettingsHandler),
+    WriteAllFn : #type proc "c" (ctx: ^ImGuiContext, handler: ^ImGuiSettingsHandler, out_buf: ^ImGuiTextBuffer),
+    UserData   : rawptr,
+}
+
+ImVec4 :: struct {
+    x : f32,
+    y : f32,
+    z : f32,
+    w : f32,
+}
+
 ImGuiIO :: struct {
     ConfigFlags                       : ImGuiConfigFlags,
     BackendFlags                      : ImGuiBackendFlags,
     DisplaySize                       : ImVec2,
     DeltaTime                         : f32,
     IniSavingRate                     : f32,
-    IniFilename                       : cstring,
-    LogFilename                       : cstring,
+    IniFilename                       : ^i8,
+    LogFilename                       : ^i8,
     MouseDoubleClickTime              : f32,
     MouseDoubleClickMaxDist           : f32,
     MouseDragThreshold                : f32,
@@ -205,13 +923,13 @@ ImGuiIO :: struct {
     ConfigWindowsResizeFromEdges      : bool,
     ConfigWindowsMoveFromTitleBarOnly : bool,
     ConfigMemoryCompactTimer          : f32,
-    BackendPlatformName               : cstring,
-    BackendRendererName               : cstring,
+    BackendPlatformName               : ^i8,
+    BackendRendererName               : ^i8,
     BackendPlatformUserData           : rawptr,
     BackendRendererUserData           : rawptr,
     BackendLanguageUserData           : rawptr,
-    GetClipboardTextFn                : #type proc "c" (user_data: rawptr) -> cstring,
-    SetClipboardTextFn                : #type proc "c" (user_data: rawptr, text: cstring),
+    GetClipboardTextFn                : #type proc "c" (user_data: rawptr) -> ^i8,
+    SetClipboardTextFn                : #type proc "c" (user_data: rawptr, text: ^i8),
     ClipboardUserData                 : rawptr,
     SetPlatformImeDataFn              : #type proc "c" (viewport: ^ImGuiViewport, data: ^ImGuiPlatformImeData),
     _UnusedPadding                    : rawptr,
@@ -267,6 +985,239 @@ ImGuiIO :: struct {
     InputQueueCharacters              : ImVector(ImWchar),
 }
 
+ImGuiPlatformImeData :: struct {
+    WantVisible     : bool,
+    InputPos        : ImVec2,
+    InputLineHeight : f32,
+}
+
+ImGuiOldColumnData :: struct {
+    OffsetNorm             : f32,
+    OffsetNormBeforeResize : f32,
+    Flags                  : ImGuiOldColumnFlags,
+    ClipRect               : ImRect,
+}
+
+ImDrawCmdHeader :: struct {
+    ClipRect  : ImVec4,
+    TextureId : ImTextureID,
+    VtxOffset : u32,
+}
+
+ImGuiTabBar :: struct {
+    Tabs                            : ImVector(ImGuiTabItem),
+    Flags                           : ImGuiTabBarFlags,
+    ID                              : ImGuiID,
+    SelectedTabId                   : ImGuiID,
+    NextSelectedTabId               : ImGuiID,
+    VisibleTabId                    : ImGuiID,
+    CurrFrameVisible                : i32,
+    PrevFrameVisible                : i32,
+    BarRect                         : ImRect,
+    CurrTabsContentsHeight          : f32,
+    PrevTabsContentsHeight          : f32,
+    WidthAllTabs                    : f32,
+    WidthAllTabsIdeal               : f32,
+    ScrollingAnim                   : f32,
+    ScrollingTarget                 : f32,
+    ScrollingTargetDistToVisibility : f32,
+    ScrollingSpeed                  : f32,
+    ScrollingRectMinX               : f32,
+    ScrollingRectMaxX               : f32,
+    ReorderRequestTabId             : ImGuiID,
+    ReorderRequestOffset            : ImS16,
+    BeginCount                      : ImS8,
+    WantLayout                      : bool,
+    VisibleTabWasSubmitted          : bool,
+    TabsAddedNew                    : bool,
+    TabsActiveCount                 : ImS16,
+    LastTabItemIdx                  : ImS16,
+    ItemSpacingY                    : f32,
+    FramePadding                    : ImVec2,
+    BackupCursorPos                 : ImVec2,
+    TabsNames                       : ImGuiTextBuffer,
+}
+
+ImGuiShrinkWidthItem :: struct {
+    Index        : i32,
+    Width        : f32,
+    InitialWidth : f32,
+}
+
+ImGuiTableCellData :: struct {
+    BgColor : u32,
+    Column  : ImGuiTableColumnIdx,
+}
+
+ImGuiWindow :: struct {
+    Name                               : ^i8,
+    ID                                 : ImGuiID,
+    Flags                              : ImGuiWindowFlags,
+    FlagsPreviousFrame                 : ImGuiWindowFlags,
+    WindowClass                        : ImGuiWindowClass,
+    Viewport                           : ^ImGuiViewportP,
+    ViewportId                         : ImGuiID,
+    ViewportPos                        : ImVec2,
+    ViewportAllowPlatformMonitorExtend : i32,
+    Pos                                : ImVec2,
+    Size                               : ImVec2,
+    SizeFull                           : ImVec2,
+    ContentSize                        : ImVec2,
+    ContentSizeIdeal                   : ImVec2,
+    ContentSizeExplicit                : ImVec2,
+    WindowPadding                      : ImVec2,
+    WindowRounding                     : f32,
+    WindowBorderSize                   : f32,
+    NameBufLen                         : i32,
+    MoveId                             : ImGuiID,
+    TabId                              : ImGuiID,
+    ChildId                            : ImGuiID,
+    Scroll                             : ImVec2,
+    ScrollMax                          : ImVec2,
+    ScrollTarget                       : ImVec2,
+    ScrollTargetCenterRatio            : ImVec2,
+    ScrollTargetEdgeSnapDist           : ImVec2,
+    ScrollbarSizes                     : ImVec2,
+    ScrollbarX                         : bool,
+    ScrollbarY                         : bool,
+    ViewportOwned                      : bool,
+    Active                             : bool,
+    WasActive                          : bool,
+    WriteAccessed                      : bool,
+    Collapsed                          : bool,
+    WantCollapseToggle                 : bool,
+    SkipItems                          : bool,
+    Appearing                          : bool,
+    Hidden                             : bool,
+    IsFallbackWindow                   : bool,
+    IsExplicitChild                    : bool,
+    HasCloseButton                     : bool,
+    ResizeBorderHeld                   : i8,
+    BeginCount                         : i16,
+    BeginCountPreviousFrame            : i16,
+    BeginOrderWithinParent             : i16,
+    BeginOrderWithinContext            : i16,
+    FocusOrder                         : i16,
+    PopupId                            : ImGuiID,
+    AutoFitFramesX                     : ImS8,
+    AutoFitFramesY                     : ImS8,
+    AutoFitChildAxises                 : ImS8,
+    AutoFitOnlyGrows                   : bool,
+    AutoPosLastDirection               : ImGuiDir,
+    HiddenFramesCanSkipItems           : ImS8,
+    HiddenFramesCannotSkipItems        : ImS8,
+    HiddenFramesForRenderOnly          : ImS8,
+    DisableInputsFrames                : ImS8,
+    SetWindowPosAllowFlags             : ImGuiCond,
+    SetWindowSizeAllowFlags            : ImGuiCond,
+    SetWindowCollapsedAllowFlags       : ImGuiCond,
+    SetWindowDockAllowFlags            : ImGuiCond,
+    SetWindowPosVal                    : ImVec2,
+    SetWindowPosPivot                  : ImVec2,
+    IDStack                            : ImVector(ImGuiID),
+    DC                                 : ImGuiWindowTempData,
+    OuterRectClipped                   : ImRect,
+    InnerRect                          : ImRect,
+    InnerClipRect                      : ImRect,
+    WorkRect                           : ImRect,
+    ParentWorkRect                     : ImRect,
+    ClipRect                           : ImRect,
+    ContentRegionRect                  : ImRect,
+    HitTestHoleSize                    : ImVec2ih,
+    HitTestHoleOffset                  : ImVec2ih,
+    LastFrameActive                    : i32,
+    LastFrameJustFocused               : i32,
+    LastTimeActive                     : f32,
+    ItemWidthDefault                   : f32,
+    StateStorage                       : ImGuiStorage,
+    ColumnsStorage                     : ImVector(ImGuiOldColumns),
+    FontWindowScale                    : f32,
+    FontDpiScale                       : f32,
+    SettingsOffset                     : i32,
+    DrawList                           : ^ImDrawList,
+    DrawListInst                       : ImDrawList,
+    ParentWindow                       : ^ImGuiWindow,
+    ParentWindowInBeginStack           : ^ImGuiWindow,
+    RootWindow                         : ^ImGuiWindow,
+    RootWindowPopupTree                : ^ImGuiWindow,
+    RootWindowDockTree                 : ^ImGuiWindow,
+    RootWindowForTitleBarHighlight     : ^ImGuiWindow,
+    RootWindowForNav                   : ^ImGuiWindow,
+    NavLastChildNavWindow              : ^ImGuiWindow,
+    NavLastIds                         : [2]ImGuiID,
+    NavRectRel                         : [2]ImRect,
+    NavRootFocusScopeId                : ImGuiID,
+    MemoryDrawListIdxCapacity          : i32,
+    MemoryDrawListVtxCapacity          : i32,
+    MemoryCompacted                    : bool,
+    DockIsActive                       : bool,
+    DockNodeIsVisible                  : bool,
+    DockTabIsVisible                   : bool,
+    DockTabWantClose                   : bool,
+    DockOrder                          : i16,
+    DockStyle                          : ImGuiWindowDockStyle,
+    DockNode                           : ^ImGuiDockNode,
+    DockNodeAsHost                     : ^ImGuiDockNode,
+    DockId                             : ImGuiID,
+    DockTabItemStatusFlags             : ImGuiItemStatusFlags,
+    DockTabItemRect                    : ImRect,
+}
+
+ImDrawVert :: struct {
+    pos : ImVec2,
+    uv  : ImVec2,
+    col : u32,
+}
+
+ImDrawListSplitter :: struct {
+    _Current  : i32,
+    _Count    : i32,
+    _Channels : ImVector(ImDrawChannel),
+}
+
+ImDrawListSharedData :: struct {
+    TexUvWhitePixel         : ImVec2,
+    Font                    : ^ImFont,
+    FontSize                : f32,
+    CurveTessellationTol    : f32,
+    CircleSegmentMaxError   : f32,
+    ClipRectFullscreen      : ImVec4,
+    InitialFlags            : ImDrawListFlags,
+    TempBuffer              : ImVector(ImVec2),
+    ArcFastVtx              : [48]ImVec2,
+    ArcFastRadiusCutoff     : f32,
+    CircleSegmentCounts     : [64]ImU8,
+    TexUvLines              : ^ImVec4,
+}
+
+ImGuiStoragePair :: struct {
+    key : ImGuiID,
+//        : union { int val(i; float val), /* unions are not supported yet in the generator */
+}
+
+ImFontBuilderIO :: struct {
+    FontBuilder_Build : #type proc "c" (atlas: ^ImFontAtlas) -> bool,
+}
+
+ImGuiTableColumnSortSpecs :: struct {
+    ColumnUserID  : ImGuiID,
+    ColumnIndex   : ImS16,
+    SortOrder     : ImS16,
+    SortDirection : ImGuiSortDirection,
+}
+
+ImGuiInputEventMouseButton :: struct {
+    Button : i32,
+    Down   : bool,
+}
+
+ImGuiKeyData :: struct {
+    Down             : bool,
+    DownDuration     : f32,
+    DownDurationPrev : f32,
+    AnalogValue      : f32,
+}
+
 ImGuiInputTextCallbackData :: struct {
     EventFlag      : ImGuiInputTextFlags,
     Flags          : ImGuiInputTextFlags,
@@ -282,154 +1233,339 @@ ImGuiInputTextCallbackData :: struct {
     SelectionEnd   : i32,
 }
 
-ImGuiKeyData :: struct {
-    Down             : bool,
-    DownDuration     : f32,
-    DownDurationPrev : f32,
-    AnalogValue      : f32,
+ImFontAtlas :: struct {
+    Flags              : ImFontAtlasFlags,
+    TexID              : ImTextureID,
+    TexDesiredWidth    : i32,
+    TexGlyphPadding    : i32,
+    Locked             : bool,
+    TexReady           : bool,
+    TexPixelsUseColors : bool,
+    TexPixelsAlpha8    : ^u8,
+    TexPixelsRGBA32    : ^u32,
+    TexWidth           : i32,
+    TexHeight          : i32,
+    TexUvScale         : ImVec2,
+    TexUvWhitePixel    : ImVec2,
+    Fonts              : ImVector(^ImFont),
+    CustomRects        : ImVector(ImFontAtlasCustomRect),
+    ConfigData         : ImVector(ImFontConfig),
+    TexUvLines         : [64]ImVec4,
+    FontBuilderIO      : ^ImFontBuilderIO,
+    FontBuilderFlags   : u32,
+    PackIdMouseCursors : i32,
+    PackIdLines        : i32,
 }
 
-ImGuiListClipper :: struct {
-    DisplayStart : i32,
-    DisplayEnd   : i32,
-    ItemsCount   : i32,
-    ItemsHeight  : f32,
-    StartPosY    : f32,
-    TempData     : rawptr,
+ImGuiInputEventMouseViewport :: struct {
+    HoveredViewportID : ImGuiID,
 }
 
-ImGuiOnceUponAFrame :: struct {
-    RefFrame : i32,
+ImDrawDataBuilder :: struct {
+    Layers    : [2]ImVector(^ImDrawList),
 }
 
-ImGuiPayload :: struct {
-    Data           : rawptr,
-    DataSize       : i32,
-    SourceId       : ImGuiID,
-    SourceParentId : ImGuiID,
-    DataFrameCount : i32,
-    DataType       : [33]i8,
-    Preview        : bool,
-    Delivery       : bool,
+ImVec2 :: struct {
+    x : f32,
+    y : f32,
 }
 
-ImGuiPlatformIO :: struct {
-    Platform_CreateWindow       : #type proc "c" (vp: ^ImGuiViewport),
-    Platform_DestroyWindow      : #type proc "c" (vp: ^ImGuiViewport),
-    Platform_ShowWindow         : #type proc "c" (vp: ^ImGuiViewport),
-    Platform_SetWindowPos       : #type proc "c" (vp: ^ImGuiViewport, pos: ImVec2),
-    Platform_GetWindowPos       : #type proc "c" (vp: ^ImGuiViewport) -> ImVec2,
-    Platform_SetWindowSize      : #type proc "c" (vp: ^ImGuiViewport, size: ImVec2),
-    Platform_GetWindowSize      : #type proc "c" (vp: ^ImGuiViewport) -> ImVec2,
-    Platform_SetWindowFocus     : #type proc "c" (vp: ^ImGuiViewport),
-    Platform_GetWindowFocus     : #type proc "c" (vp: ^ImGuiViewport) -> bool,
-    Platform_GetWindowMinimized : #type proc "c" (vp: ^ImGuiViewport) -> bool,
-    Platform_SetWindowTitle     : #type proc "c" (vp: ^ImGuiViewport, str: cstring),
-    Platform_SetWindowAlpha     : #type proc "c" (vp: ^ImGuiViewport, alpha: f32),
-    Platform_UpdateWindow       : #type proc "c" (vp: ^ImGuiViewport),
-    Platform_RenderWindow       : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
-    Platform_SwapBuffers        : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
-    Platform_GetWindowDpiScale  : #type proc "c" (vp: ^ImGuiViewport) -> f32,
-    Platform_OnChangedViewport  : #type proc "c" (vp: ^ImGuiViewport),
-    Platform_CreateVkSurface    : #type proc "c" (vp: ^ImGuiViewport, vk_inst: ImU64, vk_allocators: rawptr, out_vk_surface: ^ImU64) -> i32,
-    Renderer_CreateWindow       : #type proc "c" (vp: ^ImGuiViewport),
-    Renderer_DestroyWindow      : #type proc "c" (vp: ^ImGuiViewport),
-    Renderer_SetWindowSize      : #type proc "c" (vp: ^ImGuiViewport, size: ImVec2),
-    Renderer_RenderWindow       : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
-    Renderer_SwapBuffers        : #type proc "c" (vp: ^ImGuiViewport, render_arg: rawptr),
-    Monitors                    : ImVector(ImGuiPlatformMonitor),
-    Viewports                   : ImVector(^ImGuiViewport),
+ImGuiWindowStackData :: struct {
+    Window                   : ^ImGuiWindow,
+    ParentLastItemDataBackup : ImGuiLastItemData,
+    StackSizesOnBegin        : ImGuiStackSizes,
 }
 
-ImGuiPlatformImeData :: struct {
-    WantVisible     : bool,
-    InputPos        : ImVec2,
-    InputLineHeight : f32,
+ImGuiViewportP :: struct {
+    _ImGuiViewport          : ImGuiViewport,
+    Idx                     : i32,
+    LastFrameActive         : i32,
+    LastFrontMostStampCount : i32,
+    LastNameHash            : ImGuiID,
+    LastPos                 : ImVec2,
+    Alpha                   : f32,
+    LastAlpha               : f32,
+    PlatformMonitor         : i16,
+    PlatformWindowCreated   : bool,
+    Window                  : ^ImGuiWindow,
+    DrawListsLastFrame      : [2]i32,
+    DrawLists               : [2]^ImDrawList,
+    DrawDataP               : ImDrawData,
+    DrawDataBuilder         : ImDrawDataBuilder,
+    LastPlatformPos         : ImVec2,
+    LastPlatformSize        : ImVec2,
+    LastRendererSize        : ImVec2,
+    WorkOffsetMin           : ImVec2,
+    WorkOffsetMax           : ImVec2,
+    BuildWorkOffsetMin      : ImVec2,
+    BuildWorkOffsetMax      : ImVec2,
 }
 
-ImGuiPlatformMonitor :: struct {
-    MainPos  : ImVec2,
-    MainSize : ImVec2,
-    WorkPos  : ImVec2,
-    WorkSize : ImVec2,
-    DpiScale : f32,
+ImGuiContext :: struct {
+    Initialized                              : bool,
+    FontAtlasOwnedByContext                  : bool,
+    IO                                       : ImGuiIO,
+    PlatformIO                               : ImGuiPlatformIO,
+    InputEventsQueue                         : ImVector(ImGuiInputEvent),
+    InputEventsTrail                         : ImVector(ImGuiInputEvent),
+    Style                                    : ImGuiStyle,
+    ConfigFlagsCurrFrame                     : ImGuiConfigFlags,
+    ConfigFlagsLastFrame                     : ImGuiConfigFlags,
+    Font                                     : ^ImFont,
+    FontSize                                 : f32,
+    FontBaseSize                             : f32,
+    DrawListSharedData                       : ImDrawListSharedData,
+    Time                                     : f64,
+    FrameCount                               : i32,
+    FrameCountEnded                          : i32,
+    FrameCountPlatformEnded                  : i32,
+    FrameCountRendered                       : i32,
+    WithinFrameScope                         : bool,
+    WithinFrameScopeWithImplicitWindow       : bool,
+    WithinEndChild                           : bool,
+    GcCompactAll                             : bool,
+    TestEngineHookItems                      : bool,
+    TestEngine                               : rawptr,
+    Windows                                  : ImVector(^ImGuiWindow),
+    WindowsFocusOrder                        : ImVector(^ImGuiWindow),
+    WindowsTempSortBuffer                    : ImVector(^ImGuiWindow),
+    CurrentWindowStack                       : ImVector(ImGuiWindowStackData),
+    WindowsById                              : ImGuiStorage,
+    WindowsActiveCount                       : i32,
+    WindowsHoverPadding                      : ImVec2,
+    CurrentWindow                            : ^ImGuiWindow,
+    HoveredWindow                            : ^ImGuiWindow,
+    HoveredWindowUnderMovingWindow           : ^ImGuiWindow,
+    MovingWindow                             : ^ImGuiWindow,
+    WheelingWindow                           : ^ImGuiWindow,
+    WheelingWindowRefMousePos                : ImVec2,
+    WheelingWindowReleaseTimer               : f32,
+    DebugHookIdInfo                          : ImGuiID,
+    HoveredId                                : ImGuiID,
+    HoveredIdPreviousFrame                   : ImGuiID,
+    HoveredIdAllowOverlap                    : bool,
+    HoveredIdDisabled                        : bool,
+    HoveredIdTimer                           : f32,
+    HoveredIdNotActiveTimer                  : f32,
+    ActiveId                                 : ImGuiID,
+    ActiveIdIsAlive                          : ImGuiID,
+    ActiveIdTimer                            : f32,
+    ActiveIdIsJustActivated                  : bool,
+    ActiveIdAllowOverlap                     : bool,
+    ActiveIdNoClearOnFocusLoss               : bool,
+    ActiveIdHasBeenPressedBefore             : bool,
+    ActiveIdHasBeenEditedBefore              : bool,
+    ActiveIdHasBeenEditedThisFrame           : bool,
+    ActiveIdClickOffset                      : ImVec2,
+    ActiveIdWindow                           : ^ImGuiWindow,
+    ActiveIdSource                           : ImGuiInputSource,
+    ActiveIdMouseButton                      : i32,
+    ActiveIdPreviousFrame                    : ImGuiID,
+    ActiveIdPreviousFrameIsAlive             : bool,
+    ActiveIdPreviousFrameHasBeenEditedBefore : bool,
+    ActiveIdPreviousFrameWindow              : ^ImGuiWindow,
+    LastActiveId                             : ImGuiID,
+    LastActiveIdTimer                        : f32,
+    KeysOwnerData                            : [140]ImGuiKeyOwnerData,
+    KeysRoutingTable                         : ImGuiKeyRoutingTable,
+    ActiveIdUsingNavDirMask                  : u32,
+    ActiveIdUsingAllKeyboardKeys             : bool,
+    ActiveIdUsingNavInputMask                : u32,
+    CurrentFocusScopeId                      : ImGuiID,
+    CurrentItemFlags                         : ImGuiItemFlags,
+    DebugLocateId                            : ImGuiID,
+    NextItemData                             : ImGuiNextItemData,
+    LastItemData                             : ImGuiLastItemData,
+    NextWindowData                           : ImGuiNextWindowData,
+    ColorStack                               : ImVector(ImGuiColorMod),
+    StyleVarStack                            : ImVector(ImGuiStyleMod),
+    FontStack                                : ImVector(^ImFont),
+    FocusScopeStack                          : ImVector(ImGuiID),
+    ItemFlagsStack                           : ImVector(ImGuiItemFlags),
+    GroupStack                               : ImVector(ImGuiGroupData),
+    OpenPopupStack                           : ImVector(ImGuiPopupData),
+    BeginPopupStack                          : ImVector(ImGuiPopupData),
+    BeginMenuCount                           : i32,
+    Viewports                                : ImVector(^ImGuiViewportP),
+    CurrentDpiScale                          : f32,
+    CurrentViewport                          : ^ImGuiViewportP,
+    MouseViewport                            : ^ImGuiViewportP,
+    MouseLastHoveredViewport                 : ^ImGuiViewportP,
+    PlatformLastFocusedViewportId            : ImGuiID,
+    FallbackMonitor                          : ImGuiPlatformMonitor,
+    ViewportFrontMostStampCount              : i32,
+    NavWindow                                : ^ImGuiWindow,
+    NavId                                    : ImGuiID,
+    NavFocusScopeId                          : ImGuiID,
+    NavActivateId                            : ImGuiID,
+    NavActivateDownId                        : ImGuiID,
+    NavActivatePressedId                     : ImGuiID,
+    NavActivateInputId                       : ImGuiID,
+    NavActivateFlags                         : ImGuiActivateFlags,
+    NavJustMovedToId                         : ImGuiID,
+    NavJustMovedToFocusScopeId               : ImGuiID,
+    NavJustMovedToKeyMods                    : ImGuiKeyChord,
+    NavNextActivateId                        : ImGuiID,
+    NavNextActivateFlags                     : ImGuiActivateFlags,
+    NavInputSource                           : ImGuiInputSource,
+    NavLayer                                 : ImGuiNavLayer,
+    NavIdIsAlive                             : bool,
+    NavMousePosDirty                         : bool,
+    NavDisableHighlight                      : bool,
+    NavDisableMouseHover                     : bool,
+    NavAnyRequest                            : bool,
+    NavInitRequest                           : bool,
+    NavInitRequestFromMove                   : bool,
+    NavInitResultId                          : ImGuiID,
+    NavInitResultRectRel                     : ImRect,
+    NavMoveSubmitted                         : bool,
+    NavMoveScoringItems                      : bool,
+    NavMoveForwardToNextFrame                : bool,
+    NavMoveFlags                             : ImGuiNavMoveFlags,
+    NavMoveScrollFlags                       : ImGuiScrollFlags,
+    NavMoveKeyMods                           : ImGuiKeyChord,
+    NavMoveDir                               : ImGuiDir,
+    NavMoveDirForDebug                       : ImGuiDir,
+    NavMoveClipDir                           : ImGuiDir,
+    NavScoringRect                           : ImRect,
+    NavScoringNoClipRect                     : ImRect,
+    NavScoringDebugCount                     : i32,
+    NavTabbingDir                            : i32,
+    NavTabbingCounter                        : i32,
+    NavMoveResultLocal                       : ImGuiNavItemData,
+    NavMoveResultLocalVisible                : ImGuiNavItemData,
+    NavMoveResultOther                       : ImGuiNavItemData,
+    NavTabbingResultFirst                    : ImGuiNavItemData,
+    ConfigNavWindowingKeyNext                : ImGuiKeyChord,
+    ConfigNavWindowingKeyPrev                : ImGuiKeyChord,
+    NavWindowingTarget                       : ^ImGuiWindow,
+    NavWindowingTargetAnim                   : ^ImGuiWindow,
+    NavWindowingListWindow                   : ^ImGuiWindow,
+    NavWindowingTimer                        : f32,
+    NavWindowingHighlightAlpha               : f32,
+    NavWindowingToggleLayer                  : bool,
+    NavWindowingAccumDeltaPos                : ImVec2,
+    NavWindowingAccumDeltaSize               : ImVec2,
+    DimBgRatio                               : f32,
+    MouseCursor                              : ImGuiMouseCursor,
+    DragDropActive                           : bool,
+    DragDropWithinSource                     : bool,
+    DragDropWithinTarget                     : bool,
+    DragDropSourceFlags                      : ImGuiDragDropFlags,
+    DragDropSourceFrameCount                 : i32,
+    DragDropMouseButton                      : i32,
+    DragDropPayload                          : ImGuiPayload,
+    DragDropTargetRect                       : ImRect,
+    DragDropTargetId                         : ImGuiID,
+    DragDropAcceptFlags                      : ImGuiDragDropFlags,
+    DragDropAcceptIdCurrRectSurface          : f32,
+    DragDropAcceptIdCurr                     : ImGuiID,
+    DragDropAcceptIdPrev                     : ImGuiID,
+    DragDropAcceptFrameCount                 : i32,
+    DragDropHoldJustPressedId                : ImGuiID,
+    DragDropPayloadBufHeap                   : ImVector(unsigned),
+    DragDropPayloadBufLocal                  : [16]u8,
+    ClipperTempDataStacked                   : i32,
+    ClipperTempData                          : ImVector(ImGuiListClipperData),
+    CurrentTable                             : ^ImGuiTable,
+    TablesTempDataStacked                    : i32,
+    TablesTempData                           : ImVector(ImGuiTableTempData),
+    Tables                                   : ImPool(ImGuiTable),
+    TablesLastTimeActive                     : ImVector(f32),
+    DrawChannelsTempMergeBuffer              : ImVector(ImDrawChannel),
+    CurrentTabBar                            : ^ImGuiTabBar,
+    TabBars                                  : ImPool(ImGuiTabBar),
+    CurrentTabBarStack                       : ImVector(ImGuiPtrOrIndex),
+    ShrinkWidthBuffer                        : ImVector(ImGuiShrinkWidthItem),
+    HoverDelayId                             : ImGuiID,
+    HoverDelayIdPreviousFrame                : ImGuiID,
+    HoverDelayTimer                          : f32,
+    HoverDelayClearTimer                     : f32,
+    MouseLastValidPos                        : ImVec2,
+    InputTextState                           : ImGuiInputTextState,
+    InputTextPasswordFont                    : ImFont,
+    TempInputId                              : ImGuiID,
+    ColorEditOptions                         : ImGuiColorEditFlags,
+    ColorEditLastHue                         : f32,
+    ColorEditLastSat                         : f32,
+    ColorEditLastColor                       : u32,
+    ColorPickerRef                           : ImVec4,
+    ComboPreviewData                         : ImGuiComboPreviewData,
+    SliderGrabClickOffset                    : f32,
+    SliderCurrentAccum                       : f32,
+    SliderCurrentAccumDirty                  : bool,
+    DragCurrentAccumDirty                    : bool,
+    DragCurrentAccum                         : f32,
+    DragSpeedDefaultRatio                    : f32,
+    ScrollbarClickDeltaToGrabCenter          : f32,
+    DisabledAlphaBackup                      : f32,
+    DisabledStackSize                        : i16,
+    TooltipOverrideCount                     : i16,
+    ClipboardHandlerData                     : ImVector(i8),
+    MenusIdSubmittedThisFrame                : ImVector(ImGuiID),
+    PlatformImeData                          : ImGuiPlatformImeData,
+    PlatformImeDataPrev                      : ImGuiPlatformImeData,
+    PlatformImeViewport                      : ImGuiID,
+    PlatformLocaleDecimalPoint               : i8,
+    DockContext                              : ImGuiDockContext,
+    SettingsLoaded                           : bool,
+    SettingsDirtyTimer                       : f32,
+    SettingsIniData                          : ImGuiTextBuffer,
+    SettingsHandlers                         : ImVector(ImGuiSettingsHandler),
+    SettingsWindows                          : ImChunkStream(ImGuiWindowSettings),
+    SettingsTables                           : ImChunkStream(ImGuiTableSettings),
+    Hooks                                    : ImVector(ImGuiContextHook),
+    HookIdNext                               : ImGuiID,
+    LogEnabled                               : bool,
+    LogType                                  : ImGuiLogType,
+    LogFile                                  : ImFileHandle,
+    LogBuffer                                : ImGuiTextBuffer,
+    LogNextPrefix                            : ^i8,
+    LogNextSuffix                            : ^i8,
+    LogLinePosY                              : f32,
+    LogLineFirstItem                         : bool,
+    LogDepthRef                              : i32,
+    LogDepthToExpand                         : i32,
+    LogDepthToExpandDefault                  : i32,
+    DebugLogFlags                            : ImGuiDebugLogFlags,
+    DebugLogBuf                              : ImGuiTextBuffer,
+    DebugLogIndex                            : ImGuiTextIndex,
+    DebugLocateFrames                        : ImU8,
+    DebugItemPickerActive                    : bool,
+    DebugItemPickerMouseButton               : ImU8,
+    DebugItemPickerBreakId                   : ImGuiID,
+    DebugMetricsConfig                       : ImGuiMetricsConfig,
+    DebugStackTool                           : ImGuiStackTool,
+    DebugHoveredDockNode                     : ^ImGuiDockNode,
+    FramerateSecPerFrame                     : [60]f32,
+    FramerateSecPerFrameIdx                  : i32,
+    FramerateSecPerFrameCount                : i32,
+    FramerateSecPerFrameAccum                : f32,
+    WantCaptureMouseNextFrame                : i32,
+    WantCaptureKeyboardNextFrame             : i32,
+    WantTextInputNextFrame                   : i32,
+    TempBuffer                               : ImVector(i8),
 }
 
-ImGuiSizeCallbackData :: struct {
-    UserData    : rawptr,
-    Pos         : ImVec2,
-    CurrentSize : ImVec2,
-    DesiredSize : ImVec2,
+STB_TexteditState :: struct {
+    cursor                : i32,
+    select_start          : i32,
+    select_end            : i32,
+    insert_mode           : u8,
+    row_count_per_page    : i32,
+    cursor_at_end_of_line : u8,
+    initialized           : u8,
+    has_preferred_x       : u8,
+    single_line           : u8,
+    padding1              : u8,
+    padding2              : u8,
+    padding3              : u8,
+    preferred_x           : f32,
+    undostate             : StbUndoState,
 }
 
-ImGuiStorage :: struct {
-    Data : ImVector(ImGuiStoragePair),
-}
-
-ImGuiStoragePair :: struct {
-    key : ImGuiID,
-//        : union { int val(i; float val), /* unions are not supported yet in the generator */
-}
-
-ImGuiStyle :: struct {
-    Alpha                      : f32,
-    DisabledAlpha              : f32,
-    WindowPadding              : ImVec2,
-    WindowRounding             : f32,
-    WindowBorderSize           : f32,
-    WindowMinSize              : ImVec2,
-    WindowTitleAlign           : ImVec2,
-    WindowMenuButtonPosition   : ImGuiDir,
-    ChildRounding              : f32,
-    ChildBorderSize            : f32,
-    PopupRounding              : f32,
-    PopupBorderSize            : f32,
-    FramePadding               : ImVec2,
-    FrameRounding              : f32,
-    FrameBorderSize            : f32,
-    ItemSpacing                : ImVec2,
-    ItemInnerSpacing           : ImVec2,
-    CellPadding                : ImVec2,
-    TouchExtraPadding          : ImVec2,
-    IndentSpacing              : f32,
-    ColumnsMinSpacing          : f32,
-    ScrollbarSize              : f32,
-    ScrollbarRounding          : f32,
-    GrabMinSize                : f32,
-    GrabRounding               : f32,
-    LogSliderDeadzone          : f32,
-    TabRounding                : f32,
-    TabBorderSize              : f32,
-    TabMinWidthForCloseButton  : f32,
-    ColorButtonPosition        : ImGuiDir,
-    ButtonTextAlign            : ImVec2,
-    SelectableTextAlign        : ImVec2,
-    DisplayWindowPadding       : ImVec2,
-    DisplaySafeAreaPadding     : ImVec2,
-    MouseCursorScale           : f32,
-    AntiAliasedLines           : bool,
-    AntiAliasedLinesUseTex     : bool,
-    AntiAliasedFill            : bool,
-    CurveTessellationTol       : f32,
-    CircleTessellationMaxError : f32,
-    Colors                     : [55]ImVec4,
-}
-
-ImGuiTableColumnSortSpecs :: struct {
-    ColumnUserID  : ImGuiID,
-    ColumnIndex   : ImS16,
-    SortOrder     : ImS16,
-    SortDirection : ImGuiSortDirection,
-}
-
-ImGuiTableSortSpecs :: struct {
-    Specs      : ^ImGuiTableColumnSortSpecs,
-    SpecsCount : i32,
-    SpecsDirty : bool,
-}
-
-ImGuiTextBuffer :: struct {
-    Buf : ImVector(i8),
+ImColor :: struct {
+    Value : ImVec4,
 }
 
 ImGuiTextFilter :: struct {
@@ -438,50 +1574,57 @@ ImGuiTextFilter :: struct {
     CountGrep     : i32,
 }
 
-ImGuiTextRange :: struct {
-    b : cstring,
-    e : cstring,
+ImGuiInputEventText :: struct {
+    Char : u32,
 }
 
-ImGuiViewport :: struct {
-    ID                    : ImGuiID,
-    Flags                 : ImGuiViewportFlags,
-    Pos                   : ImVec2,
-    Size                  : ImVec2,
-    WorkPos               : ImVec2,
-    WorkSize              : ImVec2,
-    DpiScale              : f32,
-    ParentViewportId      : ImGuiID,
-    DrawData              : ^ImDrawData,
-    RendererUserData      : rawptr,
-    PlatformUserData      : rawptr,
-    PlatformHandle        : rawptr,
-    PlatformHandleRaw     : rawptr,
-    PlatformRequestMove   : bool,
-    PlatformRequestResize : bool,
-    PlatformRequestClose  : bool,
+ImBitVector :: struct {
+    Storage : ImVector(u32),
 }
 
-ImGuiWindowClass :: struct {
-    ClassId                    : ImGuiID,
-    ParentViewportId           : ImGuiID,
-    ViewportFlagsOverrideSet   : ImGuiViewportFlags,
-    ViewportFlagsOverrideClear : ImGuiViewportFlags,
-    TabItemFlagsOverrideSet    : ImGuiTabItemFlags,
-    DockNodeFlagsOverrideSet   : ImGuiDockNodeFlags,
-    DockingAlwaysTabBar        : bool,
-    DockingAllowUnclassed      : bool,
+ImGuiTableInstanceData :: struct {
+    LastOuterHeight    : f32,
+    LastFirstRowHeight : f32,
 }
 
-ImVec2 :: struct {
-    x : f32,
-    y : f32,
+ImGuiDockContext :: struct {
+    Nodes           : ImGuiStorage,
+    Requests        : ImVector(ImGuiDockRequest),
+    NodesSettings   : ImVector(ImGuiDockNodeSettings),
+    WantFullRebuild : bool,
 }
 
-ImVec4 :: struct {
-    x : f32,
-    y : f32,
-    z : f32,
-    w : f32,
+ImGuiPopupData :: struct {
+    PopupId         : ImGuiID,
+    Window          : ^ImGuiWindow,
+    BackupNavWindow : ^ImGuiWindow,
+    ParentNavLayer  : i32,
+    OpenFrameCount  : i32,
+    OpenParentId    : ImGuiID,
+    OpenPopupPos    : ImVec2,
+    OpenMousePos    : ImVec2,
+}
+
+ImGuiNextWindowData :: struct {
+    Flags                : ImGuiNextWindowDataFlags,
+    PosCond              : ImGuiCond,
+    SizeCond             : ImGuiCond,
+    CollapsedCond        : ImGuiCond,
+    DockCond             : ImGuiCond,
+    PosVal               : ImVec2,
+    PosPivotVal          : ImVec2,
+    SizeVal              : ImVec2,
+    ContentSizeVal       : ImVec2,
+    ScrollVal            : ImVec2,
+    PosUndock            : bool,
+    CollapsedVal         : bool,
+    SizeConstraintRect   : ImRect,
+    SizeCallback         : ImGuiSizeCallback,
+    SizeCallbackUserData : rawptr,
+    BgAlphaVal           : f32,
+    ViewportId           : ImGuiID,
+    DockId               : ImGuiID,
+    WindowClass          : ImGuiWindowClass,
+    MenuBarOffsetMinVal  : ImVec2,
 }
 
